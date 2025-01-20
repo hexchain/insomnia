@@ -291,6 +291,35 @@ export class HashiCorpService implements ICloudService {
         }
       } else {
         // cloud vault
+        const { organizationId, projectId, appName, version } = config as HCPSecretConfig;
+        const secretRequestBaseUrl = `${hcp_api_url}/secrets/${hcp_api_version}/organizations/${organizationId}/projects/${projectId}/apps/${appName}/secrets/${secretName}`;
+        const secretRequestUrl = version ? `${secretRequestBaseUrl}/versions/${version}:open` : `${secretRequestBaseUrl}:open`;
+        const requestConfig: RequestInit = {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${access_token}`,
+          },
+          signal: AbortSignal.timeout(INSOMNIA_FETCH_TIME_OUT),
+        };
+        const secretResponse = await net.fetch(secretRequestUrl, requestConfig);
+        if (secretResponse.ok) {
+          const secretResponseBody = await secretResponse.json();
+          let secretResult: HCPStaticSecretValue;
+          if (version) {
+            const { static_version } = secretResponseBody as HCPStaticSecretResultWithVersion;
+            secretResult = static_version;
+          } else {
+            const { secret } = secretResponseBody as HCPStaticSecretResultWithoutVersion;
+            secretResult = secret.static_version;
+          }
+          return {
+            success: true,
+            result: secretResult,
+          };
+        } else {
+          const errorResult = await this._parseResponseError(secretResponse);
+          return errorResult;
+        }
       }
     } catch (error) {
       return {
