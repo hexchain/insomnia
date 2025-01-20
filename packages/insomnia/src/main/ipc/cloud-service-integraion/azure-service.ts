@@ -52,14 +52,14 @@ const getAzureConfig = async () => {
   }
 
   // TODO Get Azure config from server
-  return insomniaFetch<{ applicationId: string; redirectUri: string; error?: string }>({
+  return insomniaFetch<{ clientID: string; clientRedirectURI: string; error?: string }>({
     path: '/v1/oauth/azure/config',
     method: 'GET',
     sessionId: '',
   }).then(data => {
     return {
-      clientId: data.applicationId,
-      redirectUri: data.redirectUri,
+      clientId: data.clientID,
+      redirectUri: data.clientRedirectURI,
     };
   });
 };
