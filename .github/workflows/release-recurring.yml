@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - develop
+      - linux-aarch64-test
   pull_request:
     types:
       - opened

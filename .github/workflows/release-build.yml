@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'release/**'
+      - linux-aarch64-test
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
