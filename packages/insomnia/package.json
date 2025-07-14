@@ -190,5 +190,6 @@
   },
   "bin": {
     "insomnia": "bin/yarn-standalone.js"
-  }
+  },
+  "desktopName": "com.insomnia.app"
 }
